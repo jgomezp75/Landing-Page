@@ -20,10 +20,10 @@ mapeo <- vw_rpt_recruiting %>% select(ats_req_ref, ats_req_id)
 #Leemos los ficheros base para la macro
 parte_B <- data.table()
 parte_B <-
-    fread("Landing_Page_Input_B_17_41_12.txt", encoding = "UTF-8")
+    fread("data/Landing_Page_Input_B_17_41_12.txt", encoding = "UTF-8")
 columnas_B <- names(parte_B)
 parte_A <-
-    read.csv("D:/reporting api/Landing_Page_Input_A_20_07_49.csv", sep =
+    read.csv("data/Landing_Page_Input_A_20_07_49.csv", sep =
                  ";")
 
 columnas_A <- c(
@@ -248,6 +248,6 @@ output$`Mis Preferencias para ofertas de empleo (Opción 2)` <- NULL
 output$`Mis Preferencias para ofertas de empleo (Opción 3)` <- NULL
 output$`Mis Preferencias para ofertas de empleo (Opción 4)` <- NULL
 
-fwrite(output, file = paste("macro_test_jorge", ".csv", sep = ""))
+fwrite(output, file = paste("results/macro_test_jorge", ".csv", sep = ""))
 
 toc()
