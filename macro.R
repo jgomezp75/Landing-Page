@@ -209,6 +209,7 @@ for (i in 1:nrow(parte_B)) {
         merge(parte_B[i,])
     datos <- rbind(datos, d)
 }
+ 
 
 #quitamos todos aquellos pares ID DE USUARIO - VACANTE que estén en la lista a excluir
 datos <- datos %>% anti_join(excluir)
