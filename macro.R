@@ -5,6 +5,14 @@ library(tidyr)
 library(lubridate)
 library(tictoc)
 
+
+# Calculate the number of cores
+no_cores <- detectCores() - 1
+# Initiate cluster
+cl <- makeCluster(no_cores)
+registerDoParallel(cl)
+
+
 #Llamamos a WS para obtener los IDs internos de todas las vacantes
 tic("llamada a reporting API")
 sesion <- obtenerTokenSesion(apiSecret, apiKey)
@@ -25,6 +33,9 @@ columnas_B <- names(parte_B)
 parte_A <-
     read.csv("data/Landing_Page_Input_A_20_07_49.csv", sep =
                  ";")
+parte_B <-
+    fread("data/Jorge.Landing_B_21_58_47.txt", encoding = "UTF-8")
+
 
 columnas_A <- c(
     "ID DE USUARIO",
@@ -81,7 +92,7 @@ parte_B <-
 # data frame de salida
 
 datos <- data.table()
-for (i in 1:nrow(parte_B)) {
+datos <- foreach (i = 1:nrow(parte_B), .packages=c("dplyr"), .combine=rbind) %dopar% {
     d <- filter(
         parte_A,
         (
@@ -99,7 +110,7 @@ for (i in 1:nrow(parte_B)) {
     ) %>%
         select("ID DE USUARIO") %>%
         merge(parte_B[i,])
-    datos <- rbind(datos, d)
+    d
 }
 datos <-
     datos[order(
@@ -142,7 +153,7 @@ datos <- data.table()
 apdc <-
     parte_B %>% filter(`Publicación - Fecha de caducidad` <= (today("GMT") +
                                                                   5))
-for (i in 1:nrow(apdc)) {
+datos <- foreach (i = 1:nrow(apdc), .packages=c("dplyr"), .combine=rbind) %dopar% {
     d <- filter(
         parte_A,
         (
@@ -160,7 +171,7 @@ for (i in 1:nrow(apdc)) {
     ) %>%
         select("ID DE USUARIO") %>%
         merge(apdc[i,])
-    datos <- rbind(datos, d)
+    d
 }
 
 datos <-
@@ -203,11 +214,11 @@ output <-
 # Obtenemos las 10 primeras vacantes del resto de vacantes que no se muestran ni en la primera
 # ni en la tercera columna
 datos <- data.table()
-for (i in 1:nrow(parte_B)) {
+datos <- foreach (i = 1:nrow(apdc), .packages=c("dplyr"), .combine=rbind) %dopar% {
     d <- parte_A %>%
         select("ID DE USUARIO") %>%
         merge(parte_B[i,])
-    datos <- rbind(datos, d)
+    d
 }
  
 
@@ -247,7 +258,8 @@ output$`Mis Preferencias para ofertas de empleo (Opción 1)` <- NULL
 output$`Mis Preferencias para ofertas de empleo (Opción 2)` <- NULL
 output$`Mis Preferencias para ofertas de empleo (Opción 3)` <- NULL
 output$`Mis Preferencias para ofertas de empleo (Opción 4)` <- NULL
+output$`x[FALSE, ]`<-NULL
 
 fwrite(output, file = paste("results/macro_test_jorge", ".csv", sep = ""))
-
+stopImplicitCluster()
 toc()
