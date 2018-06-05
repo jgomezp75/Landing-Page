@@ -1,0 +1,54 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(plotly)
+library(data.table)
+library(dplyr)
+library(lubridate)
+library(scales)
+library(stats)
+```
+Obtenemos algunos gráficos generales, por ejemplo vacantes abiertas y cerradas por semanas. Para sacar la fecha de las canceladas sumamos el número de días que estuvieron abiertas a la fecha de apertura. No nos interesan las vacantes canceladas antes de abrirse por lo que no saldrán en el gráfico.
+```{r}
+periodos <- data.table(fechaInicio = seq.Date(as.Date(now())-365,as.Date(now()), by="weeks"))
+periodos <- periodos %>% mutate (fechaFin = fechaInicio + 6)
+
+#Número de ofertas abiertas y cerradas
+#Número de candidatos creados
+periodos <- periodos %>% rowwise() %>%
+            mutate(ofertasAbiertas = nrow(filter(vw_rpt_requisition, 
+                                      date(ats_req_opened_dt) >= fechaInicio & 
+                                          date(ats_req_opened_dt) <= fechaFin & ats_req_status != "Cancelled")),
+                   candidatosNuevos = nrow(filter(candidatos, 
+                                      date(user_create_dt) >= fechaInicio &
+                                          date(user_create_dt) <= fechaFin )),
+                   ofertasCerradas = nrow(filter(vw_rpt_requisition, 
+                                      date(ats_req_closed_dt) >= fechaInicio & 
+                                          date(ats_req_closed_dt) <= fechaFin)),
+                   ofertasCanceladas = nrow(filter(vw_rpt_requisition, 
+                                      date(ats_req_opened_dt) + ats_req_days_open >= fechaInicio & 
+                                          date(ats_req_opened_dt) + ats_req_days_open <= fechaFin & ats_req_status == "Cancelled")))
+periodos <- periodos %>% mutate (ofertasActivas =  ofertasAbiertas - ofertasCerradas - ofertasCanceladas)
+periodos$ofertasActivas <- cumsum(periodos$ofertasActivas)
+
+ay <- list(
+  tickfont = list(color = "red"),
+  overlaying = "y",
+  side = "right",
+  title = "vacantes"
+)
+p <- plot_ly(data = periodos, x = ~fechaInicio) %>%
+    add_trace(y = ~ofertasCerradas, name = 'ofertas cerradas',mode = 'lines') %>%
+    add_trace(y = ~ofertasAbiertas, name = 'ofertas abiertas', mode="lines") %>%
+    add_trace(y = ~ofertasCanceladas, name = 'ofertas canceladas',mode = 'lines') %>%
+    add_trace(y = ~ofertasActivas, name = 'stock ofertas',mode = 'lines',yaxis = "y2") %>%
+     layout(xaxis = list (title = "fecha"),
+            yaxis2 = ay)
+  
+p
+
+```
+

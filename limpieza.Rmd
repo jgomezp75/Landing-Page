@@ -1,0 +1,52 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(data.table)
+library(dplyr)
+library(lubridate)
+library(bit64)
+```
+
+
+Leer datos
+```{r}
+vw_rpt_user_base <- fread("vw_rpt_user_base.csv")
+vw_rpt_applicant <- fread("vw_rpt_applicant.csv")
+vw_rpt_requisition_location <- fread("vw_rpt_requisition_location.csv")
+vw_rpt_recruiting_user_flags <- fread("vw_rpt_recruiting_user_flags.csv")
+vw_rpt_requisition <- fread("vw_rpt_requisition.csv")
+
+```
+
+
+
+Limpieza de datos
+
+```{r}
+# Limpiamos país en blanco a No Especificado tanto en las vacantes como en los candidatos
+vw_rpt_requisition_location <- vw_rpt_requisition_location %>% mutate(ats_multi_loc_country = replace(ats_multi_loc_country, is.na(ats_multi_loc_country), "No Especificado"))
+vw_rpt_user_base <- vw_rpt_user_base %>% mutate(user_country = replace(user_country, is.na(user_country), "No Especificado"))
+
+# En usuarios, agrupamos los países donde BBVA no hemos implantado en 'Otros'
+paises = c("ESP","CHL","MEX","ARG","COL","PER","URY","PRY","VEN","USA","TUR","No Especificado")
+vw_rpt_user_base <- vw_rpt_user_base %>% 
+    mutate(user_country = replace(user_country, 
+                                  !(user_country %in% paises), 
+                                     "Otros"))
+
+# Convertimos caracteres en fechas
+vw_rpt_requisition <- vw_rpt_requisition %>% 
+    mutate(ats_req_opened_dt = ymd_hms(ats_req_opened_dt))
+vw_rpt_requisition <- vw_rpt_requisition %>% 
+    mutate(ats_req_closed_dt = ymd_hms(ats_req_closed_dt))
+
+
+# Creamos una copia de los usuarios para tener solo los candidatos (por rendimiento)
+candidatos <- vw_rpt_user_base %>% 
+    filter(user_type == "Career Site user")
+```
+
+
