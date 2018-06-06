@@ -1,8 +1,9 @@
 source("reportingAPI.R")
 source("clavesCSOD_pro.R")
 library(dplyr)
+library(data.table)
 
-vw_rpt_job_requisition_local
+
 
 
 #function obtenerParteB() {
@@ -12,7 +13,7 @@ vw_rpt_recruiting <-
     leerOdata("vw_rpt_recruiting",
               sesion$sessionToken,
               sesion$sessionSecretKey,
-              "")
+              "?$select=ats_req_id,ats_req_status,ats_req_posting_career_center,ats_req_candidates_number")
 vw_rpt_requisition_posting <-
     leerOdata("vw_rpt_requisition_posting",
               sesion$sessionToken,
@@ -23,11 +24,11 @@ vw_rpt_requisition_location <-
               sesion$sessionToken,
               sesion$sessionSecretKey,
               "")
-vw_rpt_ou_description_local    <-
-    leerOdata("vw_rpt_ou_description_local",
+vw_rpt_job_requisition_local    <-
+    leerOdata("vw_rpt_job_requisition_local",
               sesion$sessionToken,
               sesion$sessionSecretKey,
-              "")
+              "?$filter=culture_id%20eq%201")
 parte_B <-
     vw_rpt_recruiting %>% filter(ats_req_status == "Open",
                                  ats_req_posting_career_center ==
@@ -38,6 +39,7 @@ parte_B <-
     left_join(vw_rpt_requisition_location,
               by = c("ats_req_id" = "ats_multi_loc_req_id"))  %>%
     filter(ats_multi_loc_is_primary == TRUE) %>%
+    left_join(vw_rpt_job_requisition_local, by = c("ats_req_id" = "jrl_job_requisition_id")) %>%
     select(
         ats_req_id,
         posting_date,
@@ -45,8 +47,25 @@ parte_B <-
         ats_req_posting_career_center,
         ats_req_candidates_number,
         ats_multi_loc_country,
-        ats_multi_loc_req_ref
+        ats_multi_loc_req_ref,
+        ats_multi_loc_req_loc_id,
+        jrl_title
     )
+ubicaciones <- data.table()
+for (i in unique(parte_B$ats_multi_loc_req_loc_id)) {
+    parametros <-paste0("?$filter=(ou_id%20eq%20",i,")and(culture_id%20eq%201)")
+    u  <-
+        leerOdata("vw_rpt_ou_title_local",
+                  sesion$sessionToken,
+                  sesion$sessionSecretKey,
+                  parametros)
+    ubicaciones<-rbind(ubicaciones,u)
+}
+parte_B <-
+    left_join(parte_B,
+          ubicaciones,
+          by = c("ats_multi_loc_req_loc_id" =  "ou_id"))
+
 
     
 

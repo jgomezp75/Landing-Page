@@ -40,7 +40,6 @@ parte_B <-
 columnas_B <- names(parte_B)
 
 
-
 columnas_A <- c(
     "ID DE USUARIO",
     "Nombre de usuario",

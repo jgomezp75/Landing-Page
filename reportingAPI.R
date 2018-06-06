@@ -30,7 +30,6 @@ leerOdata <- function (vista, token, secret, parametros) {
     httpUrl <-
         paste("/services/api/x/odata/api/views/",
               vista ,
-              parametros,
               sep = "")
     stringToSign <-
         paste(
