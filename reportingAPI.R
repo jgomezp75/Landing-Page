@@ -7,9 +7,7 @@ library("xml2")
 library("RJSONIO")
 library("jsonlite")
 library("data.table")
-library("parallel")
-library("foreach")
-library("doParallel")
+
 
 timeStampCSOD <- function () {
     return (format(Sys.time(), "%Y-%m-%dT%H:%M:%S.000"))
@@ -30,7 +28,10 @@ leerOdata <- function (vista, token, secret, parametros) {
     httpMethod <- "GET"
     
     httpUrl <-
-        paste("/services/api/x/odata/api/views/", vista ,parametros, sep = "")
+        paste("/services/api/x/odata/api/views/",
+              vista ,
+              parametros,
+              sep = "")
     stringToSign <-
         paste(
             httpMethod,
@@ -50,7 +51,8 @@ leerOdata <- function (vista, token, secret, parametros) {
     url <-
         paste(entorno,
               "/services/api/x/odata/api/views/",
-              vista, parametros,
+              vista,
+              parametros,
               sep = "")
     # print(url)
     odata <- GET(
@@ -64,15 +66,15 @@ leerOdata <- function (vista, token, secret, parametros) {
     # print(odata)
     datos <-
         fromJSON(content(odata, type = "text/json", encoding = "UTF-8"))
-
-        
+    
+    
     df <- datos$value
     # print(nrow(df))
     siguiente_link <- datos$"@odata.nextLink"
     # print(siguiente_link)
     while (!is.null(datos$"@odata.nextLink")) {
         url <- paste(siguiente_link, sep = "")
-
+        
         odata <- GET(
             url,
             add_headers("x-csod-date" = isoDate),
@@ -80,7 +82,7 @@ leerOdata <- function (vista, token, secret, parametros) {
             add_headers("x-csod-signature" = cadenaFirmada)
         )
         
-
+        
         datos <-
             fromJSON(content(odata, type = "text/json", encoding = "UTF-8"))
         df <- rbind(df, datos$value)

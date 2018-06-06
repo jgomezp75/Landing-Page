@@ -4,6 +4,9 @@ library(dplyr)
 library(tidyr)
 library(lubridate)
 library(tictoc)
+library(parallel)
+library(foreach)
+library(doParallel)
 
 
 # Calculate the number of cores
@@ -93,26 +96,31 @@ parte_B <-
 # data frame de salida
 
 datos <- data.table()
-datos <- foreach (i = 1:nrow(parte_B), .packages=c("dplyr"), .combine=rbind) %dopar% {
-    d <- filter(
-        parte_A,
-        (
-            parte_A$'Mis Preferencias para ofertas de empleo (Opción 1)' == parte_B[i,]$`Tus preferencias`
-        ) |
+datos <-
+    foreach (
+        i = 1:nrow(parte_B),
+        .packages = c("dplyr"),
+        .combine = rbind
+    ) %dopar% {
+        d <- filter(
+            parte_A,
             (
-                parte_A$'Mis Preferencias para ofertas de empleo (Opción 2)' == parte_B[i,]$`Tus preferencias`
+                parte_A$'Mis Preferencias para ofertas de empleo (Opción 1)' == parte_B[i,]$`Tus preferencias`
             ) |
-            (
-                parte_A$'Mis Preferencias para ofertas de empleo (Opción 3)' == parte_B[i,]$`Tus preferencias`
-            ) |
-            (
-                parte_A$'Mis Preferencias para ofertas de empleo (Opción 4)' == parte_B[i,]$`Tus preferencias`
-            )
-    ) %>%
-        select("ID DE USUARIO") %>%
-        merge(parte_B[i,])
-    d
-}
+                (
+                    parte_A$'Mis Preferencias para ofertas de empleo (Opción 2)' == parte_B[i,]$`Tus preferencias`
+                ) |
+                (
+                    parte_A$'Mis Preferencias para ofertas de empleo (Opción 3)' == parte_B[i,]$`Tus preferencias`
+                ) |
+                (
+                    parte_A$'Mis Preferencias para ofertas de empleo (Opción 4)' == parte_B[i,]$`Tus preferencias`
+                )
+        ) %>%
+            select("ID DE USUARIO") %>%
+            merge(parte_B[i,])
+        d
+    }
 datos <-
     datos[order(
         datos$"ID DE USUARIO",
@@ -153,27 +161,32 @@ output <-
 datos <- data.table()
 apdc <-
     parte_B %>% filter(`Publicación - Fecha de caducidad` <= (today("GMT") +
-                                                                  5))
-datos <- foreach (i = 1:nrow(apdc), .packages=c("dplyr"), .combine=rbind) %dopar% {
-    d <- filter(
-        parte_A,
-        (
-            parte_A$'Mis Preferencias para ofertas de empleo (Opción 1)' != apdc[i,]$`Tus preferencias`
-        ) &
+                                                                  3))
+datos <-
+    foreach (
+        i = 1:nrow(apdc),
+        .packages = c("dplyr"),
+        .combine = rbind
+    ) %dopar% {
+        d <- filter(
+            parte_A,
             (
-                parte_A$'Mis Preferencias para ofertas de empleo (Opción 2)' != apdc[i,]$`Tus preferencias`
+                parte_A$'Mis Preferencias para ofertas de empleo (Opción 1)' != apdc[i,]$`Tus preferencias`
             ) &
-            (
-                parte_A$'Mis Preferencias para ofertas de empleo (Opción 3)' != apdc[i,]$`Tus preferencias`
-            ) &
-            (
-                parte_A$'Mis Preferencias para ofertas de empleo (Opción 4)' != apdc[i,]$`Tus preferencias`
-            )
-    ) %>%
-        select("ID DE USUARIO") %>%
-        merge(apdc[i,])
-    d
-}
+                (
+                    parte_A$'Mis Preferencias para ofertas de empleo (Opción 2)' != apdc[i,]$`Tus preferencias`
+                ) &
+                (
+                    parte_A$'Mis Preferencias para ofertas de empleo (Opción 3)' != apdc[i,]$`Tus preferencias`
+                ) &
+                (
+                    parte_A$'Mis Preferencias para ofertas de empleo (Opción 4)' != apdc[i,]$`Tus preferencias`
+                )
+        ) %>%
+            select("ID DE USUARIO") %>%
+            merge(apdc[i,])
+        d
+    }
 
 datos <-
     datos[order(
@@ -215,13 +228,18 @@ output <-
 # Obtenemos las 10 primeras vacantes del resto de vacantes que no se muestran ni en la primera
 # ni en la tercera columna
 datos <- data.table()
-datos <- foreach (i = 1:nrow(apdc), .packages=c("dplyr"), .combine=rbind) %dopar% {
-    d <- parte_A %>%
-        select("ID DE USUARIO") %>%
-        merge(parte_B[i,])
-    d
-}
- 
+datos <-
+    foreach (
+        i = 1:nrow(apdc),
+        .packages = c("dplyr"),
+        .combine = rbind
+    ) %dopar% {
+        d <- parte_A %>%
+            select("ID DE USUARIO") %>%
+            merge(parte_B[i,])
+        d
+    }
+
 
 #quitamos todos aquellos pares ID DE USUARIO - VACANTE que estén en la lista a excluir
 datos <- datos %>% anti_join(excluir)
@@ -259,7 +277,7 @@ output$`Mis Preferencias para ofertas de empleo (Opción 1)` <- NULL
 output$`Mis Preferencias para ofertas de empleo (Opción 2)` <- NULL
 output$`Mis Preferencias para ofertas de empleo (Opción 3)` <- NULL
 output$`Mis Preferencias para ofertas de empleo (Opción 4)` <- NULL
-output$`x[FALSE, ]`<-NULL
+output$`x[FALSE, ]` <- NULL
 
 fwrite(output, file = paste("results/macro_test_jorge", ".csv", sep = ""))
 stopImplicitCluster()
