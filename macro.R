@@ -27,14 +27,15 @@ mapeo <- vw_rpt_recruiting %>% select(ats_req_ref, ats_req_id)
 
 #Leemos los ficheros base para la macro
 parte_B <- data.table()
-parte_B <-
-    fread("data/Landing_Page_Input_B_17_41_12.txt", encoding = "UTF-8")
+
 columnas_B <- names(parte_B)
 parte_A <-
-    read.csv("data/Landing_Page_Input_A_20_07_49.csv", sep =
+    read.csv("data/Landing_Page_Input_A_(ESP)_21_20_52.csv", sep =
                  ";")
 parte_B <-
-    fread("data/Jorge.Landing_B_21_58_47.txt", encoding = "UTF-8")
+    fread("data/Landing_Page_Input_B_(ESP)_21_20_56.csv")
+columnas_B <- names(parte_B)
+
 
 
 columnas_A <- c(
