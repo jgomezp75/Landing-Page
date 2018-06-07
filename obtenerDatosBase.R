@@ -1,5 +1,6 @@
 source("reportingAPI.R")
 source("clavesCSOD_pro.R")
+source("camposCustom.R")
 library(dplyr)
 library(data.table)
 library(tictoc)
@@ -131,5 +132,30 @@ obtenerParteB <- function() {
             "País"
         )
     
+    return(parte_B)
+}
+
+
+
+tic()
+b<-obtenerParteB()
+toc()
+
+
+
+
+
+
+obtenerParteA <- function() {
+    #Devuelve un data frame con la información de vacantes publicadas en el career center
+    sesion <- obtenerTokenSesion(apiSecret, apiKey)
+    vw_rpt_recruiting <-
+        leerOdata(
+            "vw_rpt_recruiting",
+            sesion$sessionToken,
+            sesion$sessionSecretKey,
+            "?$select=ats_req_id,ats_req_status,ats_req_posting_career_center,ats_req_candidates_number"
+        )
+  
     return(parte_B)
 }

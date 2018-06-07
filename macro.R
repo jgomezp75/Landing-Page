@@ -31,12 +31,11 @@ mapeo <- vw_rpt_recruiting %>% select(ats_req_ref, ats_req_id)
 #Leemos los ficheros base para la macro
 parte_B <- data.table()
 
-columnas_B <- names(parte_B)
 parte_A <-
-    read.csv("data/Landing_Page_Input_A_(ESP)_21_20_52.csv", sep =
+    read.csv("data/Landing_Page_Input_A_(Global)_12_36_21.csv", sep =
                  ";")
 parte_B <-
-    fread("data/Landing_Page_Input_B_(ESP)_21_20_56.csv")
+    fread("data/Landing_Page_Input_B_(Global)_12_35_23.csv")
 columnas_B <- names(parte_B)
 
 
@@ -48,7 +47,8 @@ columnas_A <- c(
     "Mis Preferencias para ofertas de empleo (Opción 1)",
     "Mis Preferencias para ofertas de empleo (Opción 2)",
     "Mis Preferencias para ofertas de empleo (Opción 3)",
-    "Mis Preferencias para ofertas de empleo (Opción 4)"
+    "Mis Preferencias para ofertas de empleo (Opción 4)",
+    "País"
 )
 colnames(parte_A) <- columnas_A
 
@@ -62,6 +62,7 @@ parte_B <-
 parte_B$`Id. de oferta de empleo` <- parte_B$ats_req_id
 parte_B$ats_req_id <- NULL
 parte_B <- parte_B[, columnas_B, with = FALSE]
+
 
 
 #Preparamos el DF de salida
@@ -91,6 +92,15 @@ parte_B <-
             is.na(`Publicación - Fecha de caducidad`)
     )
 
+#Todos los países de los datos de entrada que no sean Mex los vamos a consolidar en GBL
+paises_noconsolidar <- c("MEX")
+parte_A<- mutate(parte_A,
+       País = ifelse(País == paises_noconsolidar, as.character(País), "GBL")
+)
+parte_B<- mutate(parte_B,
+                 "País de la oferta de empleo" = ifelse(parte_B$`País de la oferta de empleo` == paises_noconsolidar, parte_B$`País de la oferta de empleo`, "GBL")
+)
+
 # Obtenemos las 10 primersas vacantes que concuerdan con las preferencias y las grabamos en el
 # data frame de salida
 
@@ -102,7 +112,7 @@ datos <-
         .combine = rbind
     ) %dopar% {
         d <- filter(
-            parte_A,
+            parte_A,(País == parte_B[i,]$`País de la oferta de empleo`) & (
             (
                 parte_A$'Mis Preferencias para ofertas de empleo (Opción 1)' == parte_B[i,]$`Tus preferencias`
             ) |
@@ -114,7 +124,7 @@ datos <-
                 ) |
                 (
                     parte_A$'Mis Preferencias para ofertas de empleo (Opción 4)' == parte_B[i,]$`Tus preferencias`
-                )
+                ))
         ) %>%
             select("ID DE USUARIO") %>%
             merge(parte_B[i,])
@@ -168,7 +178,7 @@ datos <-
         .combine = rbind
     ) %dopar% {
         d <- filter(
-            parte_A,
+            parte_A, (País == apdc[i,]$`País de la oferta de empleo`) & (
             (
                 parte_A$'Mis Preferencias para ofertas de empleo (Opción 1)' != apdc[i,]$`Tus preferencias`
             ) &
@@ -180,7 +190,7 @@ datos <-
                 ) &
                 (
                     parte_A$'Mis Preferencias para ofertas de empleo (Opción 4)' != apdc[i,]$`Tus preferencias`
-                )
+                ))
         ) %>%
             select("ID DE USUARIO") %>%
             merge(apdc[i,])
@@ -229,12 +239,13 @@ output <-
 datos <- data.table()
 datos <-
     foreach (
-        i = 1:nrow(apdc),
+        i = 1:nrow(parte_B),
         .packages = c("dplyr"),
         .combine = rbind
     ) %dopar% {
         d <- parte_A %>%
-            select("ID DE USUARIO") %>%
+            select("ID DE USUARIO","País") %>%
+            filter(País == parte_B[i,]$`País de la oferta de empleo`  ) %>%
             merge(parte_B[i,])
         d
     }
@@ -277,6 +288,12 @@ output$`Mis Preferencias para ofertas de empleo (Opción 2)` <- NULL
 output$`Mis Preferencias para ofertas de empleo (Opción 3)` <- NULL
 output$`Mis Preferencias para ofertas de empleo (Opción 4)` <- NULL
 output$`x[FALSE, ]` <- NULL
+output$País <- NULL
+output$País <- NULL
+output$`País de la oferta de empleo.x` <- NULL
+output$`País de la oferta de empleo` <- NULL
+output$`País de la oferta de empleo.y` <- NULL
+
 
 fwrite(output, file = paste("results/macro_test_jorge", ".csv", sep = ""))
 stopImplicitCluster()
