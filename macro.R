@@ -29,13 +29,14 @@ tic("cálculo de vacantes para la landing page")
 mapeo <- vw_rpt_recruiting %>% select(ats_req_ref, ats_req_id)
 
 #Leemos los ficheros base para la macro
+parte_A <- data.table()
 parte_B <- data.table()
 
 parte_A <-
-    read.csv("data/Landing_Page_Input_A_(Global)_12_36_21.csv", sep =
-                 ";")
-parte_B <-
-    fread("data/Landing_Page_Input_B_(Global)_12_35_23.csv")
+    fread("data/Landing_Page_Input_A_(Global)_12_36_21.csv", encoding = "Latin-1")
+ parte_B <-
+     fread("data/Landing_Page_Input_B_(Global)_12_35_23.csv", encoding = "Latin-1")
+#parte_B <- obtenerParteB()
 columnas_B <- names(parte_B)
 
 

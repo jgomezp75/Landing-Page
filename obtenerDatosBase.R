@@ -5,7 +5,7 @@ library(dplyr)
 library(data.table)
 library(tictoc)
 
-
+b<-obtenerParteB()
 
 
 obtenerParteB <- function() {
@@ -37,7 +37,7 @@ obtenerParteB <- function() {
             "vw_rpt_job_requisition_local",
             sesion$sessionToken,
             sesion$sessionSecretKey,
-            "?$filter=culture_id%20eq%201"
+            "?$filter=culture_id%20eq%202"
         )
     parte_B <-
         vw_rpt_recruiting %>% filter(ats_req_status == "Open",
@@ -68,7 +68,7 @@ obtenerParteB <- function() {
         parametros <-
             paste0("?$filter=(ou_id%20eq%20",
                    i,
-                   ")and(culture_id%20eq%201)")
+                   ")and(culture_id%20eq%202)")
         u  <-
             leerOdata(
                 "vw_rpt_ou_title_local",
@@ -99,7 +99,7 @@ obtenerParteB <- function() {
             "vw_rpt_custom_field_value_local",
             sesion$sessionToken,
             sesion$sessionSecretKey,
-            "?$filter=culture_id%20eq%201"
+            "?$filter=culture_id%20eq%202"
         )
     parte_B <- left_join(
         parte_B,
@@ -118,7 +118,8 @@ obtenerParteB <- function() {
             ats_req_candidates_number,
             title,
             ats_multi_loc_country
-        )
+        ) %>%
+        filter(!is.na(cfvl_title))
     colnames(parte_B) <-
         c(
             "Tus preferencias" ,
@@ -129,7 +130,7 @@ obtenerParteB <- function() {
             "Publicación de la oferta de empleo - Centro Profesional",
             "Número de candidatos de la oferta de empleo",
             "Lugar de la oferta de empleo" ,
-            "País"
+            "País de la oferta de empleo"
         )
     
     return(parte_B)
