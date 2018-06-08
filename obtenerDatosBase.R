@@ -1,6 +1,6 @@
 source("reportingAPI.R")
 source("clavesCSOD_pro.R")
-source("camposCustom.R")
+
 library(dplyr)
 library(data.table)
 library(tictoc)
@@ -37,7 +37,7 @@ obtenerParteB <- function() {
             "vw_rpt_job_requisition_local",
             sesion$sessionToken,
             sesion$sessionSecretKey,
-            "?$filter=culture_id%20eq%202"
+            "?$filter=culture_id%20eq%2015"
         )
     parte_B <-
         vw_rpt_recruiting %>% filter(ats_req_status == "Open",
@@ -68,7 +68,7 @@ obtenerParteB <- function() {
         parametros <-
             paste0("?$filter=(ou_id%20eq%20",
                    i,
-                   ")and(culture_id%20eq%202)")
+                   ")and(culture_id%20eq%2015)")
         u  <-
             leerOdata(
                 "vw_rpt_ou_title_local",
@@ -99,7 +99,7 @@ obtenerParteB <- function() {
             "vw_rpt_custom_field_value_local",
             sesion$sessionToken,
             sesion$sessionSecretKey,
-            "?$filter=culture_id%20eq%202"
+            "?$filter=culture_id%20eq%2015"
         )
     parte_B <- left_join(
         parte_B,
@@ -137,3 +137,65 @@ obtenerParteB <- function() {
 }
 
 
+
+obtenerParteA <- function() {
+    #Devuelve un data frame con la información de vacantes publicadas en el career center
+    sesion <- obtenerTokenSesion(apiSecret, apiKey)
+    vw_rpt_ou_type <-
+        leerOdata(
+            "vw_rpt_ou_type",
+            sesion$sessionToken,
+            sesion$sessionSecretKey,
+            ""
+        )
+    vw_rpt_ou <-
+        leerOdata(
+            "vw_rpt_ou",
+            sesion$sessionToken,
+            sesion$sessionSecretKey,
+            "?$filter=type_id%20eq%20128"
+    
+            )
+    vw_rpt_user_ou <-
+        leerOdata(
+            "vw_rpt_user_ou",
+            sesion$sessionToken,
+            sesion$sessionSecretKey,
+            "?$filter=(ou_id%20eq%20353418)or(ou_id%20eq%20353417)"
+        )
+    
+    vw_rpt_user <-
+        leerOdata(
+            "vw_rpt_user",
+            sesion$sessionToken,
+            sesion$sessionSecretKey,
+            "?$select=user_id,user_name_first,user_name_last,user_div_ref,user_country&$filter=user_status_id%20eq%201"
+        )
+
+    vw_rpt_career_pref <-
+        leerOdata(
+            "vw_rpt_career_pref",
+            sesion$sessionToken,
+            sesion$sessionSecretKey,
+            ""
+        )
+    
+    vw_rpt_custom_field_value_local<-
+        leerOdata(
+            "vw_rpt_custom_field_value_local",
+            sesion$sessionToken,
+            sesion$sessionSecretKey,
+            "?$filter=culture_id%20eq%2015")
+    vw_rpt_culture<-
+        leerOdata(
+            "vw_rpt_culture",
+            sesion$sessionToken,
+            sesion$sessionSecretKey,
+            "")   
+    
+    
+    
+    
+    
+    return(parte_A)
+}
