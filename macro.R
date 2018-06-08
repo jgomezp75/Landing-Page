@@ -36,7 +36,6 @@ parte_A <-
     fread("data/Landing_Page_Input_A_(Global)_12_36_21.csv", encoding = "Latin-1")
  parte_B <-
      fread("data/Landing_Page_Input_B_(Global)_12_35_23.csv", encoding = "Latin-1")
-#parte_B <- obtenerParteB()
 columnas_B <- names(parte_B)
 
 
