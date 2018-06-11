@@ -34,10 +34,10 @@ parte_B <- data.table()
 
 parte_A <-
     fread("data/ParteA.txt",
-          encoding = "Latin-1")
+          encoding = "UTF-8")
 parte_B <-
     fread("data/ParteB.txt",
-          encoding = "Latin-1")
+          encoding = "UTF-8")
 columnas_B <- names(parte_B)
 
 
@@ -304,11 +304,13 @@ fwrite(output, file = paste("results/Landing_Page_ESP_MEX", ".csv", sep = ""))
 # Si existe un fichero en data/ sacamos además las diferencias
 if (file.exists(paste("data/Landing_Page_ESP_MEX", ".csv", sep = ""))) {
     output_anterior <-
-        fread(paste("data/Landing_Page_ESP_MEX", ".csv", sep = ""),
-              encoding = "Latin-1") 
-    filas_cambiadas <- anti_join(output,output_anterior)
-    filas_borradas <- anti_join(output_anterior,output)
-    
+        fread(paste("data/Landing_Page_ESP_MEX", ".csv", sep = ""),encoding="UTF-8") 
+    output_actual <- fread(paste("results/Landing_Page_ESP_MEX", ".csv", sep = "")) 
+    filas_cambiadas <- anti_join(output_actual,output_anterior)
+    filas_borradas <- anti_join(output_anterior,output_actual)
+    #diferencias <- rbind(filas_cambiadas,filas_borradas)
+    diferencias <- filas_cambiadas
+    fwrite(diferencias, file = paste("results/Landing_Page_ESP_MEX-DIF", ".csv", sep = ""))
 }
 
 
