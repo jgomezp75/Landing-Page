@@ -300,7 +300,17 @@ output$`País de la oferta de empleo.x` <- NULL
 output$`País de la oferta de empleo` <- NULL
 output$`País de la oferta de empleo.y` <- NULL
 
-
 fwrite(output, file = paste("results/Landing_Page_ESP_MEX", ".csv", sep = ""))
+# Si existe un fichero en data/ sacamos además las diferencias
+if (file.exists(paste("data/Landing_Page_ESP_MEX", ".csv", sep = ""))) {
+    output_anterior <-
+        fread(paste("data/Landing_Page_ESP_MEX", ".csv", sep = ""),
+              encoding = "Latin-1") 
+    filas_cambiadas <- anti_join(output,output_anterior)
+    filas_borradas <- anti_join(output_anterior,output)
+    
+}
+
+
 stopImplicitCluster()
 toc()
