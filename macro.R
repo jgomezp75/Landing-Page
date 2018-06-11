@@ -33,10 +33,10 @@ parte_A <- data.table()
 parte_B <- data.table()
 
 parte_A <-
-    fread("data/Landing_Page_Input_A_(Global)_14_12_46.txt",
+    fread("data/ParteA.txt",
           encoding = "Latin-1")
 parte_B <-
-    fread("data/Landing_Page_Input_B_(Global)_14_09_19.txt",
+    fread("data/ParteB.txt",
           encoding = "Latin-1")
 columnas_B <- names(parte_B)
 
