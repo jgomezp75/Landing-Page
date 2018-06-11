@@ -139,7 +139,7 @@ obtenerParteB <- function() {
 
 
 obtenerParteA <- function() {
-    #Devuelve un data frame con la información de vacantes publicadas en el career center
+    #Devuelve un data frame con la información de los empleados a los cuales cargar vacantes en la landing page
     sesion <- obtenerTokenSesion(apiSecret, apiKey)
     vw_rpt_ou_type <-
         leerOdata(
