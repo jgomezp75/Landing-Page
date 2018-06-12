@@ -301,6 +301,7 @@ output$`País de la oferta de empleo` <- NULL
 output$`País de la oferta de empleo.y` <- NULL
 
 fwrite(output, file = paste("results/Landing_Page_ESP_MEX", ".csv", sep = ""))
+<<<<<<< HEAD
 # Si existe un fichero en data/ sacamos además las diferencias
 if (file.exists(paste("data/Landing_Page_ESP_MEX", ".csv", sep = ""))) {
     output_anterior <-
@@ -314,5 +315,8 @@ if (file.exists(paste("data/Landing_Page_ESP_MEX", ".csv", sep = ""))) {
 }
 
 
+=======
+write.csv(output,file = paste("results/Landing_Page_ESP_MEX", ".csv", sep = ""), na="",quote=FALSE,row.names=FALSE)
+>>>>>>> 4564de07fdcad9d82cf62a9c0bc1c2b5ef5d1dde
 stopImplicitCluster()
 toc()
