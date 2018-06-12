@@ -34,10 +34,10 @@ parte_B <- data.table()
 
 parte_A <-
     fread("data/ParteA.txt",
-          encoding = "Latin-1")
+          encoding = "UTF-8")
 parte_B <-
     fread("data/ParteB.txt",
-          encoding = "Latin-1")
+          encoding = "UTF-8")
 columnas_B <- names(parte_B)
 
 
