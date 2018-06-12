@@ -11,7 +11,9 @@ library(tictoc)
 obtenerParteB <- function() {
     #Devuelve un data frame con la información de vacantes publicadas en el career center
     sesion <- obtenerTokenSesion(apiSecret, apiKey)
-    vw_rpt_recruiting <-
+    listaVistas <- fromJSON(leermetadatos(sesion$sessionToken,sesion$sessionSecretKey))
+    
+        vw_rpt_recruiting <-
         leerOdata(
             "vw_rpt_recruiting",
             sesion$sessionToken,
@@ -180,20 +182,24 @@ obtenerParteA <- function() {
             ""
         )
     
-    vw_rpt_custom_field_value_local<-
-        leerOdata(
-            "vw_rpt_custom_field_value_local",
-            sesion$sessionToken,
-            sesion$sessionSecretKey,
-            "?$filter=culture_id%20eq%2015")
-    vw_rpt_culture<-
-        leerOdata(
-            "vw_rpt_culture",
-            sesion$sessionToken,
-            sesion$sessionSecretKey,
-            "")   
+    vw_rpt_career_pref[vw_rpt_career_pref$career_pref_question_6 == "10",13] <- "ENGINEERING"
     
+    "ENGINEERING"
+    "FINANCE" 
+    "LEGAL & COMPLIANCE"
+    "RISK MANAGEMENT"
+    "COMMUNICATIONS & MARKETING"
+    "TALENT & CULTURE"
+    "BANCA MINORISTA/RETAIL/RED"  
+    "BANCA DE EMPRESAS,INSTITUCIONES,CORPORATIVAS"
+    "DATA" 
+    "STRATEGY, M&A Y REAL STATE"
+    "AUDIT" 
+    "CUSTOMER & CLIENT SOLUTIONS"  
+    "CIB"
+    "SELECCIONAR"
     
+
     
     
     
