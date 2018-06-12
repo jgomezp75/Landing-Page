@@ -300,8 +300,6 @@ output$`País de la oferta de empleo.x` <- NULL
 output$`País de la oferta de empleo` <- NULL
 output$`País de la oferta de empleo.y` <- NULL
 
-
-fwrite(output, file = paste("results/Landing_Page_ESP_MEX", ".csv", sep = ""))
 write.csv(output,file = paste("results/Landing_Page_ESP_MEX", ".csv", sep = ""), na="",quote=FALSE,row.names=FALSE)
 stopImplicitCluster()
 toc()
