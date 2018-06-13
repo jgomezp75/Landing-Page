@@ -297,6 +297,8 @@ output$`Mis Preferencias para ofertas de empleo (Opción 4)` <- NULL
 output$`x[FALSE, ]` <- NULL
 output$País <- NULL
 output$País <- NULL
+output$País.x <- NULL
+output$País.y <- NULL
 output$`País de la oferta de empleo.x` <- NULL
 output$`País de la oferta de empleo` <- NULL
 output$`País de la oferta de empleo.y` <- NULL
