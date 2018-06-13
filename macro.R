@@ -33,9 +33,9 @@ parte_A <- data.table()
 parte_B <- data.table()
 
 parte_A <-
-    fread("data/ParteA.txt")
+    fread("data/ParteA.txt", encoding = "UTF-8")
 parte_B <-
-    fread("data/ParteB.txt")
+    fread("data/ParteB.txt", encoding = "UTF-8")
 columnas_B <- names(parte_B)
 
 
@@ -292,13 +292,13 @@ output$`Mis Preferencias para ofertas de empleo (Opción 2)` <- NULL
 output$`Mis Preferencias para ofertas de empleo (Opción 3)` <- NULL
 output$`Mis Preferencias para ofertas de empleo (Opción 4)` <- NULL
 output$`x[FALSE, ]` <- NULL
-output$País.x <- NULL
-output$País.y <- NULL
+output$País <- NULL
+output$País <- NULL
 output$`País de la oferta de empleo.x` <- NULL
 output$`País de la oferta de empleo` <- NULL
 output$`País de la oferta de empleo.y` <- NULL
 
-write.csv(output,file = paste("results/Landing_Page_ESP_MEX", ".csv", sep = ""), na="",quote=FALSE,row.names=FALSE)
+write.csv(output,file = paste("results/Landing_Page_ESP_MEX", ".csv", sep = ""), na="",quote=FALSE,row.names=FALSE, fileEncoding="Latin1")
 
 stopImplicitCluster()
 toc()
