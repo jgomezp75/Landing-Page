@@ -52,6 +52,7 @@ columnas_A <- c(
 )
 colnames(parte_A) <- columnas_A
 
+
 #Convertimos los ids externos de vacantes a ids internos
 parte_B <-
     merge(parte_B,
@@ -116,22 +117,23 @@ datos <-
         .combine = rbind
     ) %dopar% {
         d <- filter(parte_A,
-                    (País == parte_B[i, ]$`País de la oferta de empleo`) & (
+                    (País == parte_B[i,]$`País de la oferta de empleo`) &
                         (
-                            parte_A$'Mis Preferencias para ofertas de empleo (Opción 1)' == parte_B[i, ]$`Tus preferencias`
-                        ) |
                             (
-                                parte_A$'Mis Preferencias para ofertas de empleo (Opción 2)' == parte_B[i, ]$`Tus preferencias`
+                                parte_A$'Mis Preferencias para ofertas de empleo (Opción 1)' == parte_B[i,]$`Tus preferencias`
                             ) |
-                            (
-                                parte_A$'Mis Preferencias para ofertas de empleo (Opción 3)' == parte_B[i, ]$`Tus preferencias`
-                            ) |
-                            (
-                                parte_A$'Mis Preferencias para ofertas de empleo (Opción 4)' == parte_B[i, ]$`Tus preferencias`
-                            )
-                    )) %>%
+                                (
+                                    parte_A$'Mis Preferencias para ofertas de empleo (Opción 2)' == parte_B[i,]$`Tus preferencias`
+                                ) |
+                                (
+                                    parte_A$'Mis Preferencias para ofertas de empleo (Opción 3)' == parte_B[i,]$`Tus preferencias`
+                                ) |
+                                (
+                                    parte_A$'Mis Preferencias para ofertas de empleo (Opción 4)' == parte_B[i,]$`Tus preferencias`
+                                )
+                        )) %>%
             select("ID DE USUARIO") %>%
-            merge(parte_B[i, ])
+            merge(parte_B[i,])
         d
     }
 datos <-
@@ -139,7 +141,7 @@ datos <-
         datos$"ID DE USUARIO",
         datos$`Publicación - Fecha de caducidad`,
         datos$`Número de candidatos de la oferta de empleo`
-    ), ]
+    ),]
 d <- datos %>% group_by(datos$`ID DE USUARIO`) %>%  slice(1:10) %>%
     mutate(vacante = paste("TP- ID de la vacante ", row_number(), sep =
                                "")) %>%
@@ -182,22 +184,23 @@ datos <-
         .combine = rbind
     ) %dopar% {
         d <- filter(parte_A,
-                    (País == apdc[i, ]$`País de la oferta de empleo`) & (
+                    (País == apdc[i,]$`País de la oferta de empleo`) &
                         (
-                            parte_A$'Mis Preferencias para ofertas de empleo (Opción 1)' != apdc[i, ]$`Tus preferencias`
-                        ) &
                             (
-                                parte_A$'Mis Preferencias para ofertas de empleo (Opción 2)' != apdc[i, ]$`Tus preferencias`
+                                parte_A$'Mis Preferencias para ofertas de empleo (Opción 1)' != apdc[i,]$`Tus preferencias`
                             ) &
-                            (
-                                parte_A$'Mis Preferencias para ofertas de empleo (Opción 3)' != apdc[i, ]$`Tus preferencias`
-                            ) &
-                            (
-                                parte_A$'Mis Preferencias para ofertas de empleo (Opción 4)' != apdc[i, ]$`Tus preferencias`
-                            )
-                    )) %>%
+                                (
+                                    parte_A$'Mis Preferencias para ofertas de empleo (Opción 2)' != apdc[i,]$`Tus preferencias`
+                                ) &
+                                (
+                                    parte_A$'Mis Preferencias para ofertas de empleo (Opción 3)' != apdc[i,]$`Tus preferencias`
+                                ) &
+                                (
+                                    parte_A$'Mis Preferencias para ofertas de empleo (Opción 4)' != apdc[i,]$`Tus preferencias`
+                                )
+                        )) %>%
             select("ID DE USUARIO") %>%
-            merge(apdc[i, ])
+            merge(apdc[i,])
         d
     }
 
@@ -206,7 +209,7 @@ datos <-
         datos$"ID DE USUARIO",
         datos$`Publicación - Fecha de caducidad`,
         datos$`Número de candidatos de la oferta de empleo`
-    ), ]
+    ),]
 d <- datos %>% group_by(datos$`ID DE USUARIO`) %>%  slice(1:10) %>%
     mutate(vacante = paste("APD- ID de la vacante ", row_number(), sep =
                                "")) %>%
@@ -249,8 +252,8 @@ datos <-
     ) %dopar% {
         d <- parte_A %>%
             select("ID DE USUARIO", "País") %>%
-            filter(País == parte_B[i, ]$`País de la oferta de empleo`) %>%
-            merge(parte_B[i, ])
+            filter(País == parte_B[i,]$`País de la oferta de empleo`) %>%
+            merge(parte_B[i,])
         d
     }
 
@@ -263,7 +266,7 @@ datos <-
         datos$"ID DE USUARIO",
         datos$`Publicación - Fecha de caducidad`,
         datos$`Número de candidatos de la oferta de empleo`
-    ), ]
+    ),]
 d <- datos %>% group_by(datos$`ID DE USUARIO`) %>%  slice(1:10) %>%
     mutate(vacante = paste("OV- ID de la vacante ", row_number(), sep =
                                "")) %>%
@@ -298,7 +301,14 @@ output$`País de la oferta de empleo.x` <- NULL
 output$`País de la oferta de empleo` <- NULL
 output$`País de la oferta de empleo.y` <- NULL
 
-write.csv(output,file = paste("results/Landing_Page_ESP_MEX", ".csv", sep = ""), na="",quote=FALSE,row.names=FALSE, fileEncoding="Latin1")
+write.csv(
+    output,
+    file = paste("results/Landing_Page_ESP_MEX", ".csv", sep = ""),
+    na = "",
+    quote = FALSE,
+    row.names = FALSE,
+    fileEncoding = "Latin1"
+)
 
 stopImplicitCluster()
 toc()

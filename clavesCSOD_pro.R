@@ -1,6 +1,6 @@
-apiKey <- "14awhlglot3ee"
+apiKey <- "ulb3f4micb70"
 apiSecret <-
-    "m+VuycGO3jH9IlfFfyqEvNqXZaOkaN5kjwfFIP+lQ4B7kQCKmZfy6MnXu91VG+Bx0IWRzqXoLcFL0m52KDmNvg=="
+    "v8/Nt1qrcWV6ScCqg0do9izYFpNh6/iHA3xi/No5V4+dPMz7Mz/vxhLeU78JOy9XEXx1eoFLxngFYvCXuAB8Ew=="
 user <- "adm_rgarcia"
 
-entorno <- "https://bbva2-pilot.csod.com"
+entorno <- "https://bbva.csod.com"
