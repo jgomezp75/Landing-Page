@@ -32,10 +32,16 @@ mapeo <- vw_rpt_recruiting %>% select(ats_req_ref, ats_req_id)
 parte_A <- data.table()
 parte_B <- data.table()
 
+ficheroA <- "data/ParteAa.txt"
+ficheroB <- "data/ParteBa.txt"
+if ((file.exists(ficheroA) && file.exists(ficheroB))) {
 parte_A <-
-    fread("data/ParteA.txt", encoding = "UTF-8")
+    fread(ficheroA, encoding = "UTF-8")
 parte_B <-
-    fread("data/ParteB.txt", encoding = "UTF-8")
+    fread(ficheroB, encoding = "UTF-8")
+} else {
+    stop("no existen los ficheros de entrada")
+}
 columnas_B <- names(parte_B)
 
 
