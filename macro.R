@@ -8,6 +8,32 @@ library(parallel)
 library(foreach)
 library(doParallel)
 
+#Algunas funciones
+
+trocear_datos <- function (datos) {
+    chunk <- 20000
+    n <- nrow(datos)
+    r  <- rep(1:ceiling(n/chunk),each=chunk)[1:n]
+    d <- split(datos,r)
+    return (d)
+}
+
+
+grabar_ficheros <- function (d,file) {
+    for (trozo in names(d)) {
+        nombre_fichero <- basename(file)
+        nombre_fichero <- tools::file_path_sans_ext(nombre_fichero)
+        write.table(
+            d[[trozo]],
+            file = paste("results/",nombre_fichero, "-", trozo, ".txt", sep = ""),
+            na = "",
+            sep="|",
+            quote = FALSE,
+            row.names = FALSE,
+            fileEncoding = "Latin1"
+        )
+    }
+}
 
 # Calculate the number of cores
 no_cores <- detectCores() - 1
@@ -32,8 +58,8 @@ mapeo <- vw_rpt_recruiting %>% select(ats_req_ref, ats_req_id)
 parte_A <- data.table()
 parte_B <- data.table()
 
-ficheroA <- "data/ParteAa.txt"
-ficheroB <- "data/ParteBa.txt"
+ficheroA <- "data/ParteA.txt"
+ficheroB <- "data/ParteB.txt"
 if ((file.exists(ficheroA) && file.exists(ficheroB))) {
 parte_A <-
     fread(ficheroA, encoding = "UTF-8")
@@ -100,13 +126,13 @@ parte_B <-
     )
 
 #Todos los países de los datos de entrada que no sean Mex los vamos a consolidar en GBL
-paises_noconsolidar <- c("MEX")
+paises_noconsolidar <- c("MEX","PER", "COL", "VEN", "URY","PRY", "USA", "ARG")
 parte_A <- mutate(parte_A,
-                  País = ifelse(País == paises_noconsolidar, as.character(País), "GBL"))
+                  País = ifelse(País %in% paises_noconsolidar, as.character(País), "GBL"))
 parte_B <- mutate(
     parte_B,
     "País de la oferta de empleo" = ifelse(
-        parte_B$`País de la oferta de empleo` == paises_noconsolidar,
+        parte_B$`País de la oferta de empleo` %in% paises_noconsolidar,
         parte_B$`País de la oferta de empleo`,
         "GBL"
     )
@@ -309,14 +335,11 @@ output$`País de la oferta de empleo.x` <- NULL
 output$`País de la oferta de empleo` <- NULL
 output$`País de la oferta de empleo.y` <- NULL
 
-write.csv(
-    output,
-    file = paste("results/Landing_Page_ESP_MEX", ".csv", sep = ""),
-    na = "",
-    quote = FALSE,
-    row.names = FALSE,
-    fileEncoding = "Latin1"
-)
+lista_output <- trocear_datos(output)
+
+grabar_ficheros(lista_output,"Landing_Page_ESP_MEX")
+
+
 
 stopImplicitCluster()
 toc()
