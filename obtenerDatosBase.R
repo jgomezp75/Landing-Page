@@ -182,6 +182,15 @@ obtenerParteA <- function() {
             ""
         )
     
+    vw_rpt_resume <-
+        leerOdata(
+            "vw_rpt_resume",
+            sesion$sessionToken,
+            sesion$sessionSecretKey,
+            "?$top=10000"
+        )    
+    
+    vw_rpt_resume
     vw_rpt_career_pref[vw_rpt_career_pref$career_pref_question_6 == "10",13] <- "ENGINEERING"
     
     "ENGINEERING"
