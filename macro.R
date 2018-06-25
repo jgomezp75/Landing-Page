@@ -35,6 +35,51 @@ grabar_ficheros <- function (d, file) {
     }
 }
 
+limpiar_columnas <- function(output) {
+    output$`Mis Preferencias para ofertas de empleo (Opción 1)` <- NULL
+    output$`Mis Preferencias para ofertas de empleo (Opción 2)` <- NULL
+    output$`Mis Preferencias para ofertas de empleo (Opción 3)` <- NULL
+    output$`Mis Preferencias para ofertas de empleo (Opción 4)` <- NULL
+    output$`x[FALSE, ]` <- NULL
+    output$País <- NULL
+    output$País <- NULL
+    output$País.x <- NULL
+    output$País.y <- NULL
+    output$`País de la oferta de empleo.x` <- NULL
+    output$`País de la oferta de empleo` <- NULL
+    output$`País de la oferta de empleo.y` <- NULL
+    
+    columnas <- as.data.table(colnames(output))
+    colnames(columnas) <- "columna"
+    columnas <- columnas %>% filter(columna %like% 'APD' ) %>%
+        mutate (n = substr(columna, nchar(columna)-2+1, nchar(columna))) 
+    if (max(as.numeric(columnas$n)) < 10) {
+        for (i in max(as.numeric(columnas$n):10 ) ){
+            
+        }
+        
+    }
+    columnas <- as.data.table(colnames(output))
+    colnames(columnas) <- "columna"
+    columnas <- columnas %>% filter(columna %like% 'OV' ) %>%
+        mutate (n = substr(columna, nchar(columna)-2+1, nchar(columna))) 
+    if (max(as.numeric(columnas$n)) < 10) {
+        
+    }
+    columnas <- as.data.table(colnames(output))
+    colnames(columnas) <- "columna"
+    columnas <- columnas %>% filter(columna %like% 'TP' ) %>%
+        mutate (n = substr(columna, nchar(columna)-2+1, nchar(columna))) 
+    if (max(as.numeric(columnas$n)) < 10) {
+        
+    }
+        
+    
+    
+   
+    return(output)
+}
+
 # Calculate the number of cores
 no_cores <- detectCores() - 1
 # Initiate cluster
@@ -323,18 +368,9 @@ d <- d %>% group_by(`ID DE USUARIO`) %>%
         first(na.omit(x)))
 output <-
     left_join(output, d, by = c("ID de Usuario" = "ID DE USUARIO"))
-output$`Mis Preferencias para ofertas de empleo (Opción 1)` <- NULL
-output$`Mis Preferencias para ofertas de empleo (Opción 2)` <- NULL
-output$`Mis Preferencias para ofertas de empleo (Opción 3)` <- NULL
-output$`Mis Preferencias para ofertas de empleo (Opción 4)` <- NULL
-output$`x[FALSE, ]` <- NULL
-output$País <- NULL
-output$País <- NULL
-output$País.x <- NULL
-output$País.y <- NULL
-output$`País de la oferta de empleo.x` <- NULL
-output$`País de la oferta de empleo` <- NULL
-output$`País de la oferta de empleo.y` <- NULL
+
+
+output<-limpiar_columnas(output)
 
 lista_output <- trocear_datos(output)
 
