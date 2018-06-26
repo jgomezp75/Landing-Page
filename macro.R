@@ -54,8 +54,10 @@ limpiar_columnas <- function(output) {
     columnas <- columnas %>% filter(columna %like% 'APD' ) %>%
         mutate (n = substr(columna, nchar(columna)-2+1, nchar(columna))) 
     if (max(as.numeric(columnas$n)) < 10) {
-        for (i in max(as.numeric(columnas$n):10 ) ){
-            
+        for (i in max(as.numeric(columnas$n)):10  ){
+            output[paste("APD- ID de la vacante ",i,sep="")] <- NA
+            output[ paste("APD- Titulo de la vacante ",i,sep="")] <- NA
+            output[paste("APD- Localidad de la vacante",i,sep="")] <- NA
         }
         
     }
@@ -64,6 +66,11 @@ limpiar_columnas <- function(output) {
     columnas <- columnas %>% filter(columna %like% 'OV' ) %>%
         mutate (n = substr(columna, nchar(columna)-2+1, nchar(columna))) 
     if (max(as.numeric(columnas$n)) < 10) {
+        for (i in max(as.numeric(columnas$n)):10  ){
+            output[paste("OV- ID de la vacante ",i,sep="")] <- NA
+            output[ paste("OV- Titulo de la vacante ",i,sep="")] <- NA
+            output[paste("OV- Localidad de la vacante",i,sep="")] <- NA
+        }
         
     }
     columnas <- as.data.table(colnames(output))
@@ -71,6 +78,11 @@ limpiar_columnas <- function(output) {
     columnas <- columnas %>% filter(columna %like% 'TP' ) %>%
         mutate (n = substr(columna, nchar(columna)-2+1, nchar(columna))) 
     if (max(as.numeric(columnas$n)) < 10) {
+        for (i in max(as.numeric(columnas$n)):10  ){
+            output[paste("TP- ID de la vacante ",i,sep="")] <- NA
+            output[ paste("TP- Titulo de la vacante ",i,sep="")] <- NA
+            output[paste("TP- Localidad de la vacante",i,sep="")] <- NA
+        }
         
     }
         
