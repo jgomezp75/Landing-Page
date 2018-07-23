@@ -1,6 +1,6 @@
-apiKey <- "ulb3f4micb70"
+apiKey <- "1op4z8ecvgczq"
 apiSecret <-
-    "v8/Nt1qrcWV6ScCqg0do9izYFpNh6/iHA3xi/No5V4+dPMz7Mz/vxhLeU78JOy9XEXx1eoFLxngFYvCXuAB8Ew=="
-user <- "adm_rgarcia"
+    "8J3mIrgDrTZadJFWaD7DcN1RBDJhc2SdMNmhPJdECE3CsMsff7V6RqLswLgL8mU83Q+ulvlsJPt+wELdOSFiog=="
+user <- "U522210"
 
 entorno <- "https://bbva.csod.com"

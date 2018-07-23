@@ -57,7 +57,7 @@ limpiar_columnas <- function(output) {
         for (i in max(as.numeric(columnas$n)):10  ){
             output[paste("APD- ID de la vacante ",i,sep="")] <- NA
             output[ paste("APD- Titulo de la vacante ",i,sep="")] <- NA
-            output[paste("APD- Localidad de la vacante",i,sep="")] <- NA
+            output[paste("APD- Localidad de la vacante ",i,sep="")] <- NA
         }
         
     }
@@ -69,7 +69,7 @@ limpiar_columnas <- function(output) {
         for (i in max(as.numeric(columnas$n)):10  ){
             output[paste("OV- ID de la vacante ",i,sep="")] <- NA
             output[ paste("OV- Titulo de la vacante ",i,sep="")] <- NA
-            output[paste("OV- Localidad de la vacante",i,sep="")] <- NA
+            output[paste("OV- Localidad de la vacante ",i,sep="")] <- NA
         }
         
     }
@@ -81,7 +81,7 @@ limpiar_columnas <- function(output) {
         for (i in max(as.numeric(columnas$n)):10  ){
             output[paste("TP- ID de la vacante ",i,sep="")] <- NA
             output[ paste("TP- Titulo de la vacante ",i,sep="")] <- NA
-            output[paste("TP- Localidad de la vacante",i,sep="")] <- NA
+            output[paste("TP- Localidad de la vacante ",i,sep="")] <- NA
         }
         
     }
