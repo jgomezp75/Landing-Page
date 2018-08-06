@@ -11,7 +11,7 @@ library(doParallel)
 #Algunas funciones
 
 trocear_datos <- function (datos) {
-    chunk <- 20000
+    chunk <- 15000
     n <- nrow(datos)
     r  <- rep(1:ceiling(n / chunk), each = chunk)[1:n]
     d <- split(datos, r)
@@ -386,7 +386,7 @@ output<-limpiar_columnas(output)
 
 lista_output <- trocear_datos(output)
 
-grabar_ficheros(lista_output, "Landing_Page_ESP_MEX")
+grabar_ficheros(lista_output, "Landing_Page")
 
 
 
