@@ -35,6 +35,7 @@ grabar_ficheros <- function (d, file) {
     }
 }
 
+
 limpiar_columnas <- function(output) {
     output$`Mis Preferencias para ofertas de empleo (Opción 1)` <- NULL
     output$`Mis Preferencias para ofertas de empleo (Opción 2)` <- NULL
